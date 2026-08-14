@@ -1,13 +1,8 @@
-# No Cookies & Ads v1.0.1
+# No Cookies & Ads v1.0.2
 
-## Changed
+## Fixed
 
-- Removed the dark square background from the app icon.
-- Refined the teal cookie shield into a cleaner transparent mark.
-- Updated the 16, 32, 48, and 128 px extension icons.
-- Updated the repository banner and popup preview to use the new mark.
-- Reworked the popup with sharper controls and more compact utility copy.
-- Replaced the theme dropdown with direct light, dark, and system icon buttons.
+- Added the required Chrome `cookies` permission so AdGuard cookie-removal rules can call `chrome.cookies.remove` without background errors.
 
 ## Install
 

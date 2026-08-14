@@ -2,11 +2,12 @@
   "manifest_version": 3,
   "name": "No Cookies & Ads",
   "short_name": "No Cookies",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Block ads, trackers, third-party cookies, cookie banners, popups, and browser annoyances.",
   "minimum_chrome_version": "121",
   "permissions": [
     "storage",
+    "cookies",
     "tabs",
     "webRequest",
     "webNavigation",

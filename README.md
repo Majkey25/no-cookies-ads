@@ -78,6 +78,7 @@ Use the release asset, not GitHub's automatically generated source archive. The 
 | Permission | Why it is required |
 |---|---|
 | `<all_urls>` | Apply request and cosmetic filtering on visited pages. |
+| `cookies` | Let AdGuard cookie rules remove blocked cookies. |
 | `declarativeNetRequest` + feedback | Load packaged rules and show blocked-request diagnostics. |
 | `privacy` | Control third-party cookies and Related Website Sets. |
 | `storage` + `unlimitedStorage` | Store settings, filter state, allowlist, and custom rules. |
