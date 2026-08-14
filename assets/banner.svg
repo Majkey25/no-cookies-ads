@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 360" role="img" aria-labelledby="title desc">
+  <title id="title">No Cookies &amp; Ads</title>
+  <desc id="desc">Quiet browser protection for ads, trackers, cookies, and consent clutter.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="360" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#090a0b"/>
+      <stop offset="1" stop-color="#131719"/>
+    </linearGradient>
+    <linearGradient id="shield" x1="138" y1="74" x2="306" y2="286" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#36d4be"/>
+      <stop offset="1" stop-color="#087f73"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="360" rx="28" fill="url(#bg)"/>
+  <circle cx="1135" cy="-15" r="245" fill="#20b8a6" opacity=".07"/>
+  <circle cx="1000" cy="370" r="190" fill="#20b8a6" opacity=".04"/>
+  <path d="M220 60 318 97v71c0 63-39 104-98 126-59-22-98-63-98-126V97z" fill="url(#shield)"/>
+  <path d="M220 105a61 61 0 1 0 61 61c-23-2-38-20-38-42-12-2-21-9-23-19z" fill="#0b0b0c"/>
+  <circle cx="188" cy="149" r="8" fill="#36d4be"/>
+  <circle cx="218" cy="187" r="7" fill="#36d4be"/>
+  <circle cx="182" cy="207" r="6" fill="#36d4be"/>
+  <path d="m161 232 119-119" stroke="#fff" stroke-width="17" stroke-linecap="round"/>
+  <text x="374" y="113" fill="#36d4be" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="800" letter-spacing="4">QUIET BROWSING</text>
+  <text x="374" y="184" fill="#fff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="50" font-weight="800">No Cookies &amp; Ads</text>
+  <text x="376" y="229" fill="#b7bec1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20">Ads · trackers · third-party cookies · consent clutter</text>
+  <g transform="translate(376 269)" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14" font-weight="700">
+    <rect width="126" height="34" rx="17" fill="#142b29" stroke="#276b63"/>
+    <text x="22" y="22" fill="#9af3e7">MANIFEST V3</text>
+    <rect x="140" width="127" height="34" rx="17" fill="#142b29" stroke="#276b63"/>
+    <text x="164" y="22" fill="#9af3e7">NO TELEMETRY</text>
+    <rect x="281" width="128" height="34" rx="17" fill="#142b29" stroke="#276b63"/>
+    <text x="309" y="22" fill="#9af3e7">OPEN SOURCE</text>
+  </g>
+</svg>

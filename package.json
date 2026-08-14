@@ -1,0 +1,30 @@
+{
+  "name": "no-cookies-ads",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Chrome MV3 protection against ads, trackers, third-party cookies, cookie banners, and annoyances.",
+  "license": "GPL-3.0-only",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "build": "node scripts/build.mjs",
+    "package": "node scripts/package.mjs"
+  },
+  "dependencies": {
+    "@adguard/api-mv3": "2.0.1",
+    "js-yaml": "file:vendor/js-yaml-compat",
+    "js-yaml-modern": "npm:js-yaml@5.3.0"
+  },
+  "devDependencies": {
+    "@adguard/dnr-rulesets": "4.0.20260814170054",
+    "@adguard/tswebextension": "4.1.2",
+    "archiver": "^7.0.1",
+    "crypto-browserify": "^3.12.1",
+    "stream-browserify": "^3.0.0",
+    "vm-browserify": "^1.1.2",
+    "webpack": "^5.101.3"
+  },
+  "overrides": {
+    "axios": "1.19.0",
+    "js-yaml": "$js-yaml"
+  }
+}
