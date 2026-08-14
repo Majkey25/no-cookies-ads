@@ -1,5 +1,5 @@
 const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
-const themeInput = document.getElementById('theme');
+const themeButtons = document.querySelectorAll('[data-theme-value]');
 
 let settings = ProtectionSettings.sanitizeSettings();
 
@@ -19,9 +19,10 @@ async function init() {
   settings = ProtectionSettings.sanitizeSettings(stored.settings);
   await chrome.storage.local.set({ settings });
 
-  themeInput.value = settings.theme;
-  applyTheme(settings.theme);
-  themeInput.addEventListener('change', saveTheme);
+  renderTheme();
+  for (const button of themeButtons) {
+    button.addEventListener('click', saveTheme);
+  }
   systemTheme.addEventListener('change', () => {
     if (settings.theme === 'system') {
       applyTheme('system');
@@ -34,16 +35,18 @@ async function init() {
       return;
     }
     settings = ProtectionSettings.sanitizeSettings(changes.settings.newValue);
-    themeInput.value = settings.theme;
-    applyTheme(settings.theme);
+    renderTheme();
     window.PopupAdguard.renderSettings();
   });
 }
 
-async function saveTheme() {
-  settings = ProtectionSettings.sanitizeSettings({ ...settings, theme: themeInput.value });
+async function saveTheme(event) {
+  settings = ProtectionSettings.sanitizeSettings({
+    ...settings,
+    theme: event.currentTarget.dataset.themeValue
+  });
+  renderTheme();
   await chrome.storage.local.set({ settings });
-  applyTheme(settings.theme);
 }
 
 function setStatus(message, type = 'info') {
@@ -57,4 +60,11 @@ function applyTheme(theme) {
     ? (systemTheme.matches ? 'dark' : 'light')
     : theme;
   document.documentElement.dataset.theme = resolved;
+}
+
+function renderTheme() {
+  for (const button of themeButtons) {
+    button.setAttribute('aria-pressed', String(button.dataset.themeValue === settings.theme));
+  }
+  applyTheme(settings.theme);
 }

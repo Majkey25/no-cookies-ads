@@ -1,6 +1,6 @@
 {
   "name": "no-cookies-ads",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Chrome MV3 protection against ads, trackers, third-party cookies, cookie banners, and annoyances.",
   "license": "GPL-3.0-only",

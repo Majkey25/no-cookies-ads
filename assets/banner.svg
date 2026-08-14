@@ -6,20 +6,22 @@
       <stop stop-color="#090a0b"/>
       <stop offset="1" stop-color="#131719"/>
     </linearGradient>
-    <linearGradient id="shield" x1="138" y1="74" x2="306" y2="286" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#36d4be"/>
+    <linearGradient id="shield" x1="74" y1="44" x2="438" y2="477" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4de2cd"/>
       <stop offset="1" stop-color="#087f73"/>
     </linearGradient>
   </defs>
   <rect width="1280" height="360" rx="28" fill="url(#bg)"/>
   <circle cx="1135" cy="-15" r="245" fill="#20b8a6" opacity=".07"/>
   <circle cx="1000" cy="370" r="190" fill="#20b8a6" opacity=".04"/>
-  <path d="M220 60 318 97v71c0 63-39 104-98 126-59-22-98-63-98-126V97z" fill="url(#shield)"/>
-  <path d="M220 105a61 61 0 1 0 61 61c-23-2-38-20-38-42-12-2-21-9-23-19z" fill="#0b0b0c"/>
-  <circle cx="188" cy="149" r="8" fill="#36d4be"/>
-  <circle cx="218" cy="187" r="7" fill="#36d4be"/>
-  <circle cx="182" cy="207" r="6" fill="#36d4be"/>
-  <path d="m161 232 119-119" stroke="#fff" stroke-width="17" stroke-linecap="round"/>
+  <g transform="translate(69 53) scale(.5)">
+    <path d="M256 44 438 112v132c0 117-72 193-182 233C146 437 74 361 74 244V112Z" fill="url(#shield)"/>
+    <path d="M258 132a108 108 0 1 0 108 108c-40-4-67-35-66-76-22-3-39-16-42-32Z" fill="#0c2421"/>
+    <circle cx="197" cy="209" r="14" fill="#4de2cd"/>
+    <circle cx="249" cy="274" r="12" fill="#4de2cd"/>
+    <circle cx="186" cy="311" r="10" fill="#4de2cd"/>
+    <path d="M150 358 365 143" fill="none" stroke="#fff" stroke-width="30" stroke-linecap="round"/>
+  </g>
   <text x="374" y="113" fill="#36d4be" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="800" letter-spacing="4">QUIET BROWSING</text>
   <text x="374" y="184" fill="#fff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="50" font-weight="800">No Cookies &amp; Ads</text>
   <text x="376" y="229" fill="#b7bec1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20">Ads · trackers · third-party cookies · consent clutter</text>
