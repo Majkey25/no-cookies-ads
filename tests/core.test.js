@@ -60,7 +60,10 @@ test('AdGuard configuration is global and preserves all public fields', () => {
   assert.equal(configuration.filteringEnabled, true);
   assert.equal(configuration.assetsPath, 'filters');
   assert.deepEqual(configuration.allowlist, ['example.com']);
-  assert.deepEqual(configuration.rules, ['example.org##.ad']);
+  assert.deepEqual(configuration.rules, [
+    'autosimpach.cz##.PKCKS',
+    'example.org##.ad'
+  ]);
   assert.equal(configuration.documentBlockingPageUrl, 'chrome-extension://id/blocking-page.html');
   assert.equal(configuration.blocklist, undefined);
 });

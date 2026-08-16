@@ -1,8 +1,9 @@
-# No Cookies & Ads v1.0.2
+# No Cookies & Ads v1.0.3
 
 ## Fixed
 
-- Added the required Chrome `cookies` permission so AdGuard cookie-removal rules can call `chrome.cookies.remove` without background errors.
+- Hide the Auto Šimpach cookie consent and settings overlay without accepting cookies.
+- Keep the compatibility rule separate from saved user rules.
 
 ## Install
 
