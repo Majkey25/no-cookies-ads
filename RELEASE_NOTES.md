@@ -1,9 +1,8 @@
-# No Cookies & Ads v1.0.3
+# No Cookies & Ads v1.0.4
 
 ## Fixed
 
-- Hide the Auto Šimpach cookie consent and settings overlay without accepting cookies.
-- Keep the compatibility rule separate from saved user rules.
+- Hide the NFCtron Tickets cookie banner without accepting cookies.
 
 ## Install
 
