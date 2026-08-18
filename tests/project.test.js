@@ -17,14 +17,14 @@ function assertProjectFile(relativePath) {
   assert.ok(fs.existsSync(path.join(root, relativePath)), `${relativePath} must exist`);
 }
 
-test('package and manifest identify No Cookies & Ads v1.0.4', () => {
+test('package and manifest identify No Cookies & Ads v1.1.0', () => {
   const packageJson = readJson('package.json');
   const manifest = readJson('manifest.json');
 
   assert.equal(packageJson.name, 'no-cookies-ads');
-  assert.equal(packageJson.version, '1.0.4');
+  assert.equal(packageJson.version, '1.1.0');
   assert.equal(manifest.name, 'No Cookies & Ads');
-  assert.equal(manifest.version, '1.0.4');
+  assert.equal(manifest.version, '1.1.0');
   assert.equal(packageJson.license, 'GPL-3.0-only');
   assert.equal(packageJson.dependencies['js-yaml'], 'file:vendor/js-yaml-compat');
   assert.equal(packageJson.dependencies['js-yaml-modern'], 'npm:js-yaml@5.3.0');
@@ -60,6 +60,7 @@ test('popup exposes filtering, privacy, and recovery controls', () => {
 
   for (const id of [
     'adguardEnabled',
+    'braveEnabled',
     'blockThirdPartyCookies',
     'disableRelatedWebsiteSets',
     'privacyState',
@@ -95,7 +96,9 @@ test('background exposes atomic filtering and privacy operations', () => {
     'APPLY_PRIVACY_SETTINGS',
     'applyPrivacySettings',
     'MAX_BLOCKED_REQUESTS = 200',
-    'lastAppliedSettings = previous'
+    'lastAppliedSettings = previous',
+    'loadBraveRules',
+    'additionalRules'
   ]) {
     assert.match(background, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
@@ -137,9 +140,13 @@ test('documentation is accurate and includes release assets and boundary', () =>
   assert.match(readme, /not.*device-wide DNS/is);
   assert.match(readme, /request log/i);
   assert.match(readme, /no analytics|no telemetry/i);
+  assert.match(readme, /Brave list additions/i);
+  assert.match(readme, /adblock-rust/i);
   assert.doesNotMatch(readme, /youtube|sponsorblock/i);
-  assert.match(releaseNotes, /v1\.0\.4/);
+  assert.match(releaseNotes, /v1\.1\.0/);
   assert.match(releaseNotes, /no-cookies-ads\.zip/);
+  assert.match(readText('NOTICE.md'), /brave\/adblock-lists/i);
+  assert.match(readText('NOTICE.md'), /MPL-2\.0/i);
 });
 
 test('release scripts use stable and versioned No Cookies & Ads names', () => {

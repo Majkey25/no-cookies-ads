@@ -12,6 +12,7 @@ test('settings default to strict filtering and privacy protection', () => {
 
   assert.equal(settings.adguard.enabled, true);
   assert.deepEqual(settings.adguard.filterIds, [2, 3, 17, 18, 19, 20, 21, 22, 105]);
+  assert.equal(settings.adguard.braveEnabled, true);
   assert.deepEqual(settings.adguard.allowlist, []);
   assert.deepEqual(settings.adguard.rules, []);
   assert.equal(settings.privacy.blockThirdPartyCookies, true);
@@ -24,6 +25,7 @@ test('settings sanitize untrusted values and discard old YouTube state', () => {
     youtube: { enabled: true },
     adguard: {
       enabled: false,
+      braveEnabled: false,
       scope: 'youtube',
       filterIds: [18, 2, 18, -1, '3'],
       allowlist: ['Example.com', 'Example.com', 42],
@@ -37,6 +39,7 @@ test('settings sanitize untrusted values and discard old YouTube state', () => {
   });
 
   assert.deepEqual(settings.adguard.filterIds, [2, 18]);
+  assert.equal(settings.adguard.braveEnabled, false);
   assert.deepEqual(settings.adguard.allowlist, ['Example.com']);
   assert.deepEqual(settings.adguard.rules, ['example.org##.ad']);
   assert.equal(settings.adguard.scope, undefined);
@@ -53,7 +56,8 @@ test('AdGuard configuration is global and preserves all public fields', () => {
     allowlist: ['example.com'],
     rules: ['example.org##.ad']
   }, {
-    documentBlockingPageUrl: 'chrome-extension://id/blocking-page.html'
+    documentBlockingPageUrl: 'chrome-extension://id/blocking-page.html',
+    additionalRules: ['brave.example##.ad']
   });
 
   assert.deepEqual(configuration.filters, [2, 3, 17]);
@@ -63,6 +67,7 @@ test('AdGuard configuration is global and preserves all public fields', () => {
   assert.deepEqual(configuration.rules, [
     'autosimpach.cz##.PKCKS',
     'tickets.nfctron.com##[data-testid="cookie-banner-root"]',
+    'brave.example##.ad',
     'example.org##.ad'
   ]);
   assert.equal(configuration.documentBlockingPageUrl, 'chrome-extension://id/blocking-page.html');

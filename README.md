@@ -27,6 +27,7 @@ Quiet browsing in one Chrome extension. It blocks ads and trackers at the browse
 ## Protection
 
 - AdGuard MV3 network filtering for ads, tracking, URL tracking, and malicious requests.
+- Default-enabled Brave list additions for extra first-party ads and cookie notices.
 - Cosmetic filtering for page ads, overlays, cookie notices, popups, widgets, and other annoyances.
 - Chrome third-party-cookie blocking.
 - Related Website Sets disabled by default to preserve cookie isolation.
@@ -38,16 +39,19 @@ The extension does not open unsolicited tabs, windows, or consent popups. Cookie
 
 ## Cookie strategy
 
-Cookie protection uses two layers:
+Cookie protection uses three layers:
 
 1. Chrome's `privacy.websites` controls block third-party cookies and disable Related Website Sets when Chrome permits the extension to control them.
 2. AdGuard Cookie Notices and annoyances filters remove consent banners and overlays from pages.
+3. Packaged Brave-maintained additions provide extra blocking and hiding rules without auto-consent scriptlets.
 
 The popup reports when a browser policy, another extension, or the current Chrome build prevents a privacy setting from being controlled. Disabling a privacy toggle clears only this extension's override and restores the browser default.
 
 ## Scope boundary
 
 Filtering covers browser traffic that Chrome exposes to Manifest V3 extensions. This is not device-wide DNS blocking, a VPN, a proxy, or a firewall. Apps and devices outside Chrome are not filtered.
+
+The Brave layer uses pinned rules from `brave/adblock-lists` through the AdGuard engine. It does not embed Brave's native [`adblock-rust`](https://github.com/brave/adblock-rust) engine, which is integrated directly into the Brave browser.
 
 ## Install
 
@@ -64,6 +68,7 @@ Use the release asset, not GitHub's automatically generated source archive. The 
 ## Controls
 
 - **Network + page filtering** -> master filtering switch.
+- **Brave list additions** -> extra packaged ad and cookie rules, enabled by default.
 - **Block third-party cookies** -> Chrome privacy override.
 - **Disable Related Website Sets** -> prevents related-site cookie exceptions.
 - **Protect current site** -> quickly allow or protect the active site.
@@ -87,7 +92,7 @@ Use the release asset, not GitHub's automatically generated source archive. The 
 
 ## Development
 
-Requires Node.js 22 or newer.
+Requires Node.js 22 or newer and network access to download the pinned Brave source snapshot during builds.
 
 ```bash
 npm install
@@ -102,6 +107,6 @@ Release archives -> `dist/release/no-cookies-ads.zip` + versioned ZIP
 
 ## Credits and license
 
-The filtering engine, ruleset tooling, Assistant, and packaged filter assets come from [AdGuard](https://github.com/AdguardTeam). See [NOTICE.md](NOTICE.md).
+The filtering engine, ruleset tooling, Assistant, and primary packaged filter assets come from [AdGuard](https://github.com/AdguardTeam). Additional pinned filter rules come from [Brave](https://github.com/brave/adblock-lists). See [NOTICE.md](NOTICE.md).
 
 Licensed under [GPL-3.0-only](LICENSE).

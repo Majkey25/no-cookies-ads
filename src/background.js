@@ -3,6 +3,7 @@ import { localScriptRules as localScriptRulesJs } from '../.build/filters/local_
 import '../lib/settings.js';
 import '../lib/privacy-settings.js';
 import '../lib/adblock-config.js';
+import '../lib/brave-rules.js';
 import '../lib/adguard-utils.js';
 
 const MAX_BLOCKED_REQUESTS = 200;
@@ -28,6 +29,7 @@ let lastConfiguredAt = null;
 let lastConfigurationError = null;
 let privacyStatus = null;
 let blockedRequests = [];
+let braveRules = [];
 
 const protectionReady = initializeProtection().catch((error) => {
   lastConfigurationError = errorMessage(error);
@@ -84,6 +86,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 async function initializeProtection() {
   const stored = await chrome.storage.local.get('settings');
   const settings = ProtectionSettings.sanitizeSettings(stored.settings);
+  if (settings.adguard.braveEnabled) {
+    braveRules = await loadBraveRules();
+  }
 
   adguardApi = await AdguardApi.create({ localScriptRulesJs });
   adguardMessageHandler = adguardApi.getMessageHandler();
@@ -194,6 +199,9 @@ async function applyAdguardConfiguration(adguardSettings, persist) {
   const previous = lastAppliedSettings ? cloneAdguardSettings(lastAppliedSettings) : null;
 
   try {
+    if (safe.braveEnabled && braveRules.length === 0) {
+      braveRules = await loadBraveRules();
+    }
     if (adguardRunning) {
       const applied = await adguardApi.configure(createConfiguration(safe));
       if (applied?.filters) {
@@ -243,6 +251,9 @@ async function startAdguard() {
 
   const stored = await chrome.storage.local.get('settings');
   const settings = ProtectionSettings.sanitizeSettings(stored.settings);
+  if (settings.adguard.braveEnabled && braveRules.length === 0) {
+    braveRules = await loadBraveRules();
+  }
   await adguardApi.start(createConfiguration(settings.adguard));
   adguardRunning = true;
   lastAppliedSettings = cloneAdguardSettings(settings.adguard);
@@ -330,8 +341,17 @@ async function getBlockedRequestLog() {
 
 function createConfiguration(adguardSettings) {
   return AdblockConfig.createAdguardConfiguration(adguardSettings, {
-    documentBlockingPageUrl: chrome.runtime.getURL('blocking-page.html')
+    documentBlockingPageUrl: chrome.runtime.getURL('blocking-page.html'),
+    additionalRules: adguardSettings.braveEnabled ? braveRules : []
   });
+}
+
+async function loadBraveRules() {
+  const response = await fetch(chrome.runtime.getURL('filters/brave-additions.txt'));
+  if (!response.ok) {
+    throw new Error(`Brave additions returned HTTP ${response.status}`);
+  }
+  return BraveRules.validateRules(BraveRules.parseRules(await response.text()));
 }
 
 async function safeEnabledRulesets() {
@@ -401,6 +421,7 @@ function sameSettings(left, right) {
 function cloneAdguardSettings(settings) {
   return {
     enabled: Boolean(settings.enabled),
+    braveEnabled: Boolean(settings.braveEnabled),
     filterIds: [...settings.filterIds],
     allowlist: [...settings.allowlist],
     rules: [...settings.rules]

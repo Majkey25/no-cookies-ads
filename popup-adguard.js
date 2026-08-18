@@ -1,4 +1,5 @@
 const adguardEnabledInput = document.getElementById('adguardEnabled');
+const braveEnabledInput = document.getElementById('braveEnabled');
 const blockThirdPartyCookiesInput = document.getElementById('blockThirdPartyCookies');
 const disableRelatedWebsiteSetsInput = document.getElementById('disableRelatedWebsiteSets');
 const privacyState = document.getElementById('privacyState');
@@ -57,6 +58,7 @@ async function init() {
 
 function wireEvents() {
   adguardEnabledInput.addEventListener('change', applyControls);
+  braveEnabledInput.addEventListener('change', applyControls);
   blockThirdPartyCookiesInput.addEventListener('change', applyPrivacyControls);
   disableRelatedWebsiteSetsInput.addEventListener('change', applyPrivacyControls);
   currentSiteProtectionInput.addEventListener('change', toggleCurrentSiteProtection);
@@ -115,6 +117,7 @@ function renderSettings() {
   const allSettings = PopupApp.getSettings();
   const settings = allSettings.adguard;
   adguardEnabledInput.checked = settings.enabled;
+  braveEnabledInput.checked = settings.braveEnabled;
   blockThirdPartyCookiesInput.checked = allSettings.privacy.blockThirdPartyCookies;
   disableRelatedWebsiteSetsInput.checked = allSettings.privacy.disableRelatedWebsiteSets;
   allowlistEditor.value = settings.allowlist.join('\n');
@@ -242,6 +245,7 @@ async function applyControls() {
   const proposed = {
     ...current,
     enabled: adguardEnabledInput.checked,
+    braveEnabled: braveEnabledInput.checked,
     filterIds: selectedFilterIds()
   };
   await applyAdguard(proposed, 'Filtering settings applied');

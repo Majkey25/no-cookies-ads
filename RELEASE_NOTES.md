@@ -1,8 +1,9 @@
-# No Cookies & Ads v1.0.4
+# No Cookies & Ads v1.1.0
 
-## Fixed
+## Added
 
-- Hide the NFCtron Tickets cookie banner without accepting cookies.
+- Add a default-enabled Brave-maintained ad and cookie rule layer beside AdGuard Strict.
+- Keep the layer additive: no allow rules, unhide rules, auto-consent clicks, or consent-cookie scriptlets.
 
 ## Install
 

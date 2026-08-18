@@ -9,6 +9,7 @@ import {
   excludeUnsafeRules
 } from '@adguard/dnr-rulesets';
 import { copyWar } from '@adguard/tswebextension/cli';
+import { downloadBraveAdditions } from './brave-sources.mjs';
 
 const require = createRequire(import.meta.url);
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -25,6 +26,11 @@ await fs.mkdir(outputDir, { recursive: true });
 
 const loader = new AssetsLoader();
 await loader.load(filtersDir);
+await fs.writeFile(
+  path.join(filtersDir, 'brave-additions.txt'),
+  await downloadBraveAdditions(),
+  'utf8'
+);
 
 const catalog = await discoverFilterCatalog();
 if (catalog.filters.length === 0) {
