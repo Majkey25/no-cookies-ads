@@ -1,9 +1,10 @@
-# No Cookies & Ads v1.1.0
+# No Cookies & Ads v1.1.1
 
-## Added
+## Fixed
 
-- Add a default-enabled Brave-maintained ad and cookie rule layer beside AdGuard Strict.
-- Keep the layer additive: no allow rules, unhide rules, auto-consent clicks, or consent-cookie scriptlets.
+- Refresh the packaged AdGuard MV3 and Brave-maintained filter snapshots.
+- Hide oXyShop and Upgates cookie dialogs across sites using those storefront frameworks.
+- Remove the Upgates dim backdrop and restore page scrolling without accepting cookies.
 
 ## Install
 

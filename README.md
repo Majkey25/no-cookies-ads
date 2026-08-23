@@ -45,6 +45,8 @@ Cookie protection uses three layers:
 2. AdGuard Cookie Notices and annoyances filters remove consent banners and overlays from pages.
 3. Packaged Brave-maintained additions provide extra blocking and hiding rules without auto-consent scriptlets.
 
+Chrome MV3 packages static network rules with each extension release, so releases refresh the official filter snapshots. Built-in framework rules cover recurring cookie-dialog gaps without clicking consent controls.
+
 The popup reports when a browser policy, another extension, or the current Chrome build prevents a privacy setting from being controlled. Disabling a privacy toggle clears only this extension's override and restores the browser default.
 
 ## Scope boundary

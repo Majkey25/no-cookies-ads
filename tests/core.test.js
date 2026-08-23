@@ -65,6 +65,11 @@ test('AdGuard configuration is global and preserves all public fields', () => {
   assert.equal(configuration.assetsPath, 'filters');
   assert.deepEqual(configuration.allowlist, ['example.com']);
   assert.deepEqual(configuration.rules, [
+    '###cookie-modal-2022',
+    '###cookiesDialog',
+    '##.cookies.CA',
+    '#$#body:has(> #cookiesDialog.show):not(:has(> .modal.show:not(#cookiesDialog))) > .modal-backdrop { display: none !important; }',
+    '#$#body.modal-open:has(> #cookiesDialog.show):not(:has(> .modal.show:not(#cookiesDialog))) { overflow: auto !important; padding-right: 0 !important; }',
     'autosimpach.cz##.PKCKS',
     'tickets.nfctron.com##[data-testid="cookie-banner-root"]',
     'brave.example##.ad',
