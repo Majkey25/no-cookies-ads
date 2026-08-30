@@ -1,10 +1,15 @@
-# No Cookies & Ads v1.1.1
+# No Cookies & Ads v1.2.0
+
+## Added
+
+- Add a default-on structural fallback for fixed cookie, consent, and GDPR containers missed by filter lists.
+- Cover dynamically inserted banners without scanning page text or clicking consent controls.
 
 ## Fixed
 
-- Refresh the packaged AdGuard MV3 and Brave-maintained filter snapshots.
-- Hide oXyShop and Upgates cookie dialogs across sites using those storefront frameworks.
-- Remove the Upgates dim backdrop and restore page scrolling without accepting cookies.
+- Hide the reported Ráj Dortů, Pneu-Kvalitně, and Nářadí-Vzduch cookie overlays.
+- Keep normal dialogs, static cookie settings links, and existing site fixes working.
+- Refresh the pinned Brave-maintained rules snapshot.
 
 ## Install
 

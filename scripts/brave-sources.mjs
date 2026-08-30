@@ -1,6 +1,6 @@
 import BraveRules from '../lib/brave-rules.js';
 
-export const BRAVE_SOURCE_COMMIT = '53ba6df288c3ebad3139c331d2f30ffa07de8ce7';
+export const BRAVE_SOURCE_COMMIT = '20124f353d1627db18a4c94cc89cb7b3de89c445';
 
 const SOURCE_PATHS = Object.freeze([
   'brave-lists/brave-specific.txt',

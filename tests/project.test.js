@@ -17,14 +17,14 @@ function assertProjectFile(relativePath) {
   assert.ok(fs.existsSync(path.join(root, relativePath)), `${relativePath} must exist`);
 }
 
-test('package and manifest identify No Cookies & Ads v1.1.1', () => {
+test('package and manifest identify No Cookies & Ads v1.2.0', () => {
   const packageJson = readJson('package.json');
   const manifest = readJson('manifest.json');
 
   assert.equal(packageJson.name, 'no-cookies-ads');
-  assert.equal(packageJson.version, '1.1.1');
+  assert.equal(packageJson.version, '1.2.0');
   assert.equal(manifest.name, 'No Cookies & Ads');
-  assert.equal(manifest.version, '1.1.1');
+  assert.equal(manifest.version, '1.2.0');
   assert.equal(packageJson.license, 'GPL-3.0-only');
   assert.equal(packageJson.dependencies['js-yaml'], 'file:vendor/js-yaml-compat');
   assert.equal(packageJson.dependencies['js-yaml-modern'], 'npm:js-yaml@5.3.0');
@@ -143,7 +143,7 @@ test('documentation is accurate and includes release assets and boundary', () =>
   assert.match(readme, /Brave list additions/i);
   assert.match(readme, /adblock-rust/i);
   assert.doesNotMatch(readme, /youtube|sponsorblock/i);
-  assert.match(releaseNotes, /v1\.1\.1/);
+  assert.match(releaseNotes, /v1\.2\.0/);
   assert.match(releaseNotes, /no-cookies-ads\.zip/);
   assert.match(readText('NOTICE.md'), /brave\/adblock-lists/i);
   assert.match(readText('NOTICE.md'), /MPL-2\.0/i);

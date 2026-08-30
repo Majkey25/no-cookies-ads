@@ -65,6 +65,14 @@ test('AdGuard configuration is global and preserves all public fields', () => {
   assert.equal(configuration.assetsPath, 'filters');
   assert.deepEqual(configuration.allowlist, ['example.com']);
   assert.deepEqual(configuration.rules, [
+    '###cm[aria-modal="true"]:has(#c-ttl)',
+    '#?#[id*="cookie" i]:matches-css(position: fixed)',
+    '#?#[class*="cookie" i]:matches-css(position: fixed)',
+    '#?#[id*="consent" i]:matches-css(position: fixed)',
+    '#?#[class*="consent" i]:matches-css(position: fixed)',
+    '#?#[id*="gdpr" i]:matches-css(position: fixed)',
+    '#?#[class*="gdpr" i]:matches-css(position: fixed)',
+    '#$#body.modal-open:has(> [id*="cookie" i][role="dialog"]):not(:has(> .modal.show:not([id*="cookie" i]))) { overflow: auto !important; padding-right: 0 !important; }',
     '###cookie-modal-2022',
     '###cookiesDialog',
     '##.cookies.CA',
