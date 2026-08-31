@@ -44,7 +44,7 @@ Cookie protection uses four layers:
 1. Chrome's `privacy.websites` controls block third-party cookies and disable Related Website Sets when Chrome permits the extension to control them.
 2. AdGuard Cookie Notices and annoyances filters remove consent banners and overlays from pages.
 3. Packaged Brave-maintained additions provide extra blocking and hiding rules without auto-consent scriptlets.
-4. A structural ExtendedCSS fallback hides fixed cookie, consent, and GDPR containers that the packaged lists miss.
+4. A structural ExtendedCSS fallback hides fixed or sticky cookie, consent, and GDPR containers that the packaged lists miss. It also recognizes common ARIA, test, and consent-data structures.
 
 The fallback uses DOM identifiers and layout, not page-language phrases. It does not click buttons, set consent cookies, or hide ordinary dialogs and static cookie controls.
 

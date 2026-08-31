@@ -1,15 +1,14 @@
-# No Cookies & Ads v1.2.0
+# No Cookies & Ads v1.3.0
 
 ## Added
 
-- Add a default-on structural fallback for fixed cookie, consent, and GDPR containers missed by filter lists.
-- Cover dynamically inserted banners without scanning page text or clicking consent controls.
+- Extend the structural fallback to sticky cookie, consent, and GDPR banners.
+- Detect fixed consent UI through `aria-label`, `data-testid`, `data-cookieconsent`, and `data-consent` attributes.
 
 ## Fixed
 
-- Hide the reported Ráj Dortů, Pneu-Kvalitně, and Nářadí-Vzduch cookie overlays.
-- Keep normal dialogs, static cookie settings links, and existing site fixes working.
-- Refresh the pinned Brave-maintained rules snapshot.
+- Keep normal privacy dialogs and static cookie settings controls visible.
+- Preserve the v1.2.0 site fixes, allowlisting, and standard dialog behavior.
 
 ## Install
 
