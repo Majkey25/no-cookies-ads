@@ -1,12 +1,11 @@
-# No Cookies & Ads v1.3.1
+# No Cookies & Ads v1.3.2
 
 ## Fixed
 
-- Explain that hiding a cookie banner does not reject consent or guarantee tracking stops.
-- Replace the unconditional sign-in guarantee with a site-exception explanation.
-- Name the search and rule-editor fields for assistive technology.
-- Add privacy, local-data deletion, support, and free-use information.
-- Include the privacy notice and GPL license in release archives.
+- Preserve unsaved Allowlist and User rules text during refreshes, failed saves, and unrelated setting changes.
+- Keep newer edits when an earlier save finishes; ignore obsolete poll replies and errors.
+- Fetch the request log when opened and retain unchanged rows during later refreshes. First-open loading is deferred work.
+- In matched lab checks, drafts survived all 20 idle windows and added DOM nodes fell from 209 to 7 per refresh. CPU ranges overlapped, so no general CPU speedup is claimed.
 
 ## Install
 
