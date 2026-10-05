@@ -228,7 +228,9 @@ async function copyStaticFiles() {
     'blocking-page.html',
     'blocking-page.css',
     'blocking-page.js',
-    'NOTICE.md'
+    'NOTICE.md',
+    'PRIVACY.md',
+    'LICENSE'
   ];
 
   for (const file of files) {

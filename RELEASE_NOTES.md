@@ -1,14 +1,12 @@
-# No Cookies & Ads v1.3.0
-
-## Added
-
-- Extend the structural fallback to sticky cookie, consent, and GDPR banners.
-- Detect fixed consent UI through `aria-label`, `data-testid`, `data-cookieconsent`, and `data-consent` attributes.
+# No Cookies & Ads v1.3.1
 
 ## Fixed
 
-- Keep normal privacy dialogs and static cookie settings controls visible.
-- Preserve the v1.2.0 site fixes, allowlisting, and standard dialog behavior.
+- Explain that hiding a cookie banner does not reject consent or guarantee tracking stops.
+- Replace the unconditional sign-in guarantee with a site-exception explanation.
+- Name the search and rule-editor fields for assistive technology.
+- Add privacy, local-data deletion, support, and free-use information.
+- Include the privacy notice and GPL license in release archives.
 
 ## Install
 
