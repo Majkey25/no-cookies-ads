@@ -37,6 +37,8 @@ Quiet browsing in one Chrome extension. It blocks ads and trackers at the browse
 
 The extension does not open unsolicited tabs, windows, or consent popups. Cookie banners are hidden by packaged filtering rules; it does not click **Accept** for you.
 
+Hiding a banner does not reject consent, erase earlier consent, or guarantee that a site stops tracking. Turn off **Protect current site** and reload to review that site's privacy choices. See [privacy, data deletion, and terms of use](PRIVACY.md).
+
 ## Cookie strategy
 
 Cookie protection uses four layers:

@@ -69,7 +69,7 @@
       <label class="feature-row compact-row">
         <span class="feature-copy">
           <strong>Block third-party cookies</strong>
-          <small>Uses Chrome's privacy setting. First-party logins keep working.</small>
+          <small>Uses Chrome's privacy setting. Some sign-in flows may need a site exception.</small>
         </span>
         <span class="switch switch-small">
           <input id="blockThirdPartyCookies" type="checkbox" aria-label="Block third-party cookies">
@@ -89,6 +89,7 @@
       </label>
 
       <p id="privacyState" class="helper privacy-state">Reading Chrome privacy controls...</p>
+      <p class="helper">Hiding a cookie banner does not reject consent. Turn off Protect current site and reload to review the site's privacy choices.</p>
 
       <label class="feature-row compact-row">
         <span class="feature-copy">
@@ -128,14 +129,14 @@
         <small><strong>Strict</strong> Recommended plus Cookie Notices, popups, banners, widgets and other annoyances.</small>
         <small><strong>Custom</strong> Your manually selected filter combination.</small>
       </div>
-      <input id="filterSearch" class="text-input" type="search" placeholder="Search packaged filters" autocomplete="off">
+      <input id="filterSearch" class="text-input" type="search" aria-label="Search packaged filters" placeholder="Search packaged filters" autocomplete="off">
       <div id="filterList" class="filter-list" aria-label="Packaged filters"></div>
     </details>
 
     <details class="dashboard-section">
       <summary>Allowlist</summary>
       <p class="helper">One domain per line. Allowlisted sites are excluded from filtering.</p>
-      <textarea id="allowlistEditor" rows="5" spellcheck="false" placeholder="example.com"></textarea>
+      <textarea id="allowlistEditor" rows="5" aria-label="Allowlisted domains" spellcheck="false" placeholder="example.com"></textarea>
       <div class="button-row">
         <button id="allowlistApply" type="button">Apply</button>
         <button id="allowlistCurrentSite" type="button">Allow current site</button>
@@ -146,7 +147,7 @@
     <details class="dashboard-section">
       <summary>User rules</summary>
       <p class="helper">Custom filtering rules. Invalid configurations keep the last working state.</p>
-      <textarea id="userRulesEditor" rows="7" spellcheck="false" placeholder="example.org##.ad"></textarea>
+      <textarea id="userRulesEditor" rows="7" aria-label="Custom filtering rules" spellcheck="false" placeholder="example.org##.ad"></textarea>
       <div class="button-row">
         <button id="userRulesApply" type="button">Apply</button>
         <button id="userRulesReset" type="button">Reset</button>
@@ -195,6 +196,7 @@
       <div class="credits">
         <span>Filtering engine and rules:</span>
         <a href="https://github.com/AdguardTeam" target="_blank" rel="noreferrer">AdGuard</a>
+        <a href="https://github.com/Majkey25/no-cookies-ads/blob/main/PRIVACY.md" target="_blank" rel="noopener noreferrer">Privacy and data deletion</a>
       </div>
     </footer>
   </main>
