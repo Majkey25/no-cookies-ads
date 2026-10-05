@@ -24,6 +24,7 @@ const userRulesCopyButton = document.getElementById('userRulesCopy');
 const assistantOpenButton = document.getElementById('assistantOpen');
 const assistantCloseButton = document.getElementById('assistantClose');
 const requestLog = document.getElementById('requestLog');
+const requestLogDetails = requestLog.closest('details');
 const requestLogScope = document.getElementById('requestLogScope');
 const requestLogClearButton = document.getElementById('requestLogClear');
 const diagnostics = document.getElementById('adguardDiagnostics');
@@ -42,6 +43,8 @@ let dashboardState = null;
 let catalog = [];
 let blockedLog = [];
 let refreshTimer = null;
+let stateRevision = 0;
+let logRevision = 0;
 
 window.PopupAdguard = {
   init,
@@ -74,6 +77,9 @@ function wireEvents() {
   assistantOpenButton.addEventListener('click', () => runCommand('OPEN_ADGUARD_ASSISTANT', 'Assistant opened'));
   assistantCloseButton.addEventListener('click', () => runCommand('CLOSE_ADGUARD_ASSISTANT', 'Assistant closed'));
   requestLogScope.addEventListener('change', renderRequestLog);
+  requestLogDetails.addEventListener('toggle', () => {
+    if (requestLogDetails.open) refreshRequestLog(true);
+  });
   requestLogClearButton.addEventListener('click', clearRequestLog);
   copyDiagnosticsButton.addEventListener('click', copyDiagnostics);
   adguardStartButton.addEventListener('click', () => runCommand('START_ADGUARD', 'AdGuard engine started'));
@@ -100,28 +106,64 @@ async function refreshDashboard() {
 }
 
 async function refreshRuntimeOnly() {
+  let revision = stateRevision;
   try {
     const state = await sendMessage({ type: 'GET_ADGUARD_STATE' });
+    if (revision !== stateRevision) return;
+    revision = ++stateRevision;
+    const tabChanged = dashboardState?.currentTabId !== state.currentTabId;
     dashboardState = state;
     PopupApp.setSettings(state.settings);
-    const logResponse = await sendMessage({ type: 'GET_ADGUARD_LOG' });
-    blockedLog = Array.isArray(logResponse.log) ? logResponse.log : [];
-    renderSettings();
-    renderRequestLog();
+    renderRuntime();
+    if (requestLogDetails.open) await refreshRequestLog(tabChanged);
   } catch (error) {
+    if (revision !== stateRevision) return;
     PopupApp.setStatus(error.message || 'Failed to refresh AdGuard state', 'error');
   }
 }
 
+async function refreshRequestLog(force = false) {
+  const revision = ++logRevision;
+  try {
+    const response = await sendMessage({ type: 'GET_ADGUARD_LOG' });
+    if (revision !== logRevision || !requestLogDetails.open) return;
+    const next = Array.isArray(response.log) ? response.log : [];
+    if (force || JSON.stringify(next) !== JSON.stringify(blockedLog)) {
+      blockedLog = next;
+      renderRequestLog();
+    }
+  } catch (error) {
+    if (revision !== logRevision || !requestLogDetails.open) return;
+    PopupApp.setStatus(error.message || 'Failed to refresh request log', 'error');
+  }
+}
+
+function renderEditor(editor, value) {
+  if (editor.dataset.savedValue === undefined || editor.value === editor.dataset.savedValue) {
+    editor.value = value;
+  }
+  editor.dataset.savedValue = value;
+}
+
 function renderSettings() {
+  stateRevision += 1;
   const allSettings = PopupApp.getSettings();
   const settings = allSettings.adguard;
   adguardEnabledInput.checked = settings.enabled;
   braveEnabledInput.checked = settings.braveEnabled;
   blockThirdPartyCookiesInput.checked = allSettings.privacy.blockThirdPartyCookies;
   disableRelatedWebsiteSetsInput.checked = allSettings.privacy.disableRelatedWebsiteSets;
-  allowlistEditor.value = settings.allowlist.join('\n');
-  userRulesEditor.value = settings.rules.join('\n');
+  renderEditor(allowlistEditor, settings.allowlist.join('\n'));
+  renderEditor(userRulesEditor, settings.rules.join('\n'));
+  const presetName = AdguardFilters.presetForFilterIds(settings.filterIds);
+  filterPreset.value = presetName;
+  filterPresetHelp.textContent = PRESET_HELP[presetName] || PRESET_HELP.custom;
+  renderFilters();
+  renderRuntime();
+}
+
+function renderRuntime() {
+  const settings = PopupApp.getSettings().adguard;
   engineStateLabel.textContent = dashboardState?.engineRunning ? 'Engine running' : 'Engine stopped';
   currentSiteLabel.textContent = dashboardState?.currentHostname
     ? dashboardState.currentHostname
@@ -134,10 +176,6 @@ function renderSettings() {
   rulesCount.textContent = String(dashboardState?.rulesCount ?? 0);
   const maxEnabled = dashboardState?.maxEnabledStaticRulesets;
   rulesetQuota.textContent = `${settings.filterIds.length} / ${Number.isInteger(maxEnabled) ? maxEnabled : '?'}`;
-  const presetName = AdguardFilters.presetForFilterIds(settings.filterIds);
-  filterPreset.value = presetName;
-  filterPresetHelp.textContent = PRESET_HELP[presetName] || PRESET_HELP.custom;
-  renderFilters();
   renderDiagnostics();
 }
 
@@ -267,7 +305,7 @@ async function applyPrivacyControls() {
     PopupApp.setStatus('Privacy settings applied', 'success');
   } catch (error) {
     PopupApp.setStatus(error.message || 'Privacy settings could not be changed', 'error');
-    await refreshRuntimeOnly();
+    await refreshDashboard();
   }
 }
 
@@ -276,7 +314,7 @@ async function applyAllowlist() {
   await applyAdguard({
     ...current,
     allowlist: AdguardUtils.parseDomainList(allowlistEditor.value)
-  }, 'Allowlist applied');
+  }, 'Allowlist applied', allowlistEditor);
 }
 
 async function applyUserRules() {
@@ -285,7 +323,7 @@ async function applyUserRules() {
     .split(/\r?\n/)
     .map((rule) => rule.trim())
     .filter(Boolean);
-  await applyAdguard({ ...current, rules: [...new Set(rules)] }, 'User rules applied');
+  await applyAdguard({ ...current, rules: [...new Set(rules)] }, 'User rules applied', userRulesEditor);
 }
 
 async function resetUserRules() {
@@ -293,17 +331,19 @@ async function resetUserRules() {
   await applyUserRules();
 }
 
-async function applyAdguard(adguard, successMessage) {
+async function applyAdguard(adguard, successMessage, editor = null) {
+  const submittedValue = editor?.value;
   try {
     PopupApp.setStatus('Applying...', 'info');
     const state = await sendMessage({ type: 'APPLY_ADGUARD_SETTINGS', adguard });
     dashboardState = state;
     PopupApp.setSettings(state.settings);
+    if (editor && editor.value === submittedValue) editor.dataset.savedValue = submittedValue;
     renderSettings();
     PopupApp.setStatus(successMessage, 'success');
   } catch (error) {
     PopupApp.setStatus(error.message || 'Filtering configuration failed', 'error');
-    await refreshRuntimeOnly();
+    await refreshDashboard();
   }
 }
 
@@ -323,7 +363,7 @@ async function setCurrentSiteProtection(protectedState) {
     PopupApp.setStatus(protectedState ? 'Current site protected' : 'Current site allowlisted', 'success');
   } catch (error) {
     PopupApp.setStatus(error.message || 'Current-site protection could not be changed', 'error');
-    await refreshRuntimeOnly();
+    await refreshDashboard();
   }
 }
 
@@ -343,7 +383,10 @@ async function runCommand(type, successMessage) {
 
 async function clearRequestLog() {
   try {
+    logRevision += 1;
     await sendMessage({ type: 'CLEAR_ADGUARD_LOG' });
+    logRevision += 1;
+    stateRevision += 1;
     blockedLog = [];
     renderRequestLog();
     if (dashboardState) {
