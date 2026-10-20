@@ -57,7 +57,7 @@ patcher.patch(
   {
     forceUpdate: true,
     ids: discoveredIds,
-    enabled: strictDefaults,
+    enable: strictDefaults,
     filtersMatch: 'declarative/*/ruleset_+([0-9]).json'
   }
 );
@@ -166,21 +166,13 @@ function findFilterMetadata(metadata, id) {
     return null;
   }
 
-  const collections = [
-    Array.isArray(metadata) ? metadata : null,
-    Array.isArray(metadata.filters) ? metadata.filters : null,
-    Array.isArray(metadata.filter) ? metadata.filter : null
-  ].filter(Boolean);
-
-  for (const collection of collections) {
-    const match = collection.find((item) => Number(item?.id ?? item?.filterId) === id);
+  for (const collection of [metadata.filters, metadata.filter, metadata].filter(Boolean)) {
+    const match = Array.isArray(collection)
+      ? collection.find((item) => Number(item?.id ?? item?.filterId) === id)
+      : collection[String(id)] || collection[`filter_${id}`];
     if (match) {
-      return match;
+      return match.en || match['en-US'] || match.default || match;
     }
-  }
-
-  if (typeof metadata === 'object') {
-    return metadata[String(id)] || metadata[`filter_${id}`] || null;
   }
   return null;
 }
