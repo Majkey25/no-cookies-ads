@@ -503,8 +503,13 @@ async function copyDiagnostics() {
 }
 
 function selectedFilterIds() {
-  return [...filterList.querySelectorAll('input[data-filter-id]:checked')]
-    .map((input) => Number(input.dataset.filterId))
+  const selected = new Set(PopupApp.getSettings().adguard.filterIds);
+  for (const input of filterList.querySelectorAll('input[data-filter-id]')) {
+    const id = Number(input.dataset.filterId);
+    if (input.checked) selected.add(id);
+    else selected.delete(id);
+  }
+  return [...selected]
     .filter(Number.isInteger)
     .sort((a, b) => a - b);
 }

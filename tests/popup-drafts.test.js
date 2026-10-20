@@ -7,8 +7,18 @@ const vm = require('node:vm');
 function popup() {
   const details = { open: false };
   const elements = new Map();
-  const element = () => ({ value: '', dataset: {}, textContent: '', checked: false,
-    closest: () => details, replaceChildren() {}, appendChild() {}, append() {} });
+  const element = () => ({ value: '', dataset: {}, textContent: '', checked: false, children: [],
+    closest(selector) { return selector === 'details' ? details : this; },
+    setAttribute() {},
+    replaceChildren() { this.children = []; },
+    appendChild(child) { this.children.push(child); },
+    append(...children) { this.children.push(...children); },
+    querySelectorAll(selector) {
+      return this.children.flatMap(child => [
+        ...(child.dataset.filterId && (!selector.endsWith(':checked') || child.checked) ? [child] : []),
+        ...child.querySelectorAll(selector)
+      ]);
+    } });
   const getElement = id => {
     if (!elements.has(id)) elements.set(id, element());
     return elements.get(id);
@@ -82,4 +92,42 @@ test('polls and asynchronous saves preserve independent unsubmitted editor text'
   assert.equal(allowlist.value, 'newer.fixture.invalid');
   assert.equal(rules.value, 'draft.fixture.invalid##.draft');
   assert.equal(fixture.context.PopupApp.getSettings().adguard.allowlist[0], 'submitted.fixture.invalid');
+});
+
+test('filter search preserves hidden selections when changing a filter or global control', async () => {
+  const fixture = popup();
+  fixture.run(`catalog = [
+    { id: 2, name: 'Base' }, { id: 3, name: 'Tracking' }, { id: 18, name: 'Cookies' }
+  ]; renderFilters()`);
+  const original = Array.from(fixture.context.PopupApp.getSettings().adguard.filterIds);
+  fixture.elements.get('filterSearch').value = 'Base';
+  fixture.run('renderFilters()');
+  const [checkbox] = fixture.elements.get('filterList').querySelectorAll('input[data-filter-id]');
+  checkbox.checked = false;
+  const pendingFilter = fixture.run('handleFilterChange({ target: filterList.querySelectorAll("input[data-filter-id]")[0] })');
+  fixture.acceptSave();
+  await pendingFilter;
+  const expected = original.filter(id => id !== 2);
+  assert.deepEqual(Array.from(fixture.context.PopupApp.getSettings().adguard.filterIds), expected);
+
+  fixture.elements.get('filterSearch').value = 'no matching filter';
+  fixture.run('renderFilters()');
+  fixture.elements.get('adguardEnabled').checked = false;
+  const pendingGlobal = fixture.run('applyControls()');
+  fixture.acceptSave();
+  await pendingGlobal;
+  assert.deepEqual(Array.from(fixture.context.PopupApp.getSettings().adguard.filterIds), expected);
+  assert.equal(fixture.context.PopupApp.getSettings().adguard.enabled, false);
+});
+
+test('ruleset quota counts selected filters hidden by search', async () => {
+  const fixture = popup();
+  fixture.rejectSave(true);
+  fixture.run(`catalog = [{ id: 999, name: 'Extra' }];
+    dashboardState = { maxEnabledStaticRulesets: 9 }; renderFilters()`);
+  const [checkbox] = fixture.elements.get('filterList').querySelectorAll('input[data-filter-id]');
+  checkbox.checked = true;
+  await fixture.run('handleFilterChange({ target: filterList.querySelectorAll("input[data-filter-id]")[0] })');
+  assert.equal(checkbox.checked, false);
+  assert.match(fixture.elements.get('adguardStatus').textContent, /at most 9/);
 });
