@@ -32,6 +32,11 @@ jobs:
       - name: Build extension
         run: npm run build
 
+      - name: Test packaged extension in Chromium
+        run: |
+          npx playwright install --with-deps chromium
+          npm run test:browser
+
       - name: Package extension
         run: npm run package
 

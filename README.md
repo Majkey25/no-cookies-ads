@@ -105,12 +105,16 @@ Requires Node.js 22 or newer and network access to download the pinned Brave sou
 npm install
 npm test
 npm run build
+npx playwright install chromium
+npm run test:browser
 npm run package
 ```
 
 Build output -> `dist/extension`
 
 Release archives -> `dist/release/no-cookies-ads.zip` + versioned ZIP
+
+Browser regressions load the packaged extension in an isolated Chromium profile. They cover cookie overlays, scrolling, ordinary dialogs, delayed banners, and site allowlisting.
 
 ## Credits and license
 
