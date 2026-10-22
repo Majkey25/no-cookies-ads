@@ -32,3 +32,14 @@ test('Brave layer rejects missing and oversized packaged data', () => {
     /10,000/
   );
 });
+
+test('Brave additions reject badfilter modifiers accepted by the runtime parser', async () => {
+  const { RuleParser } = await import('@adguard/agtree-runtime');
+  for (const suffix of ['$badfilter', '$ badfilter', '$\tbadfilter', '$image,badfilter', '$image, badfilter']) {
+    const rule = `||ads.example^${suffix}`;
+    assert.ok(RuleParser.parse(rule).modifiers.children.some(modifier => modifier.name.value === 'badfilter'));
+    assert.deepEqual(BraveRules.parseRules(rule), [], rule);
+  }
+  assert.deepEqual(BraveRules.parseRules('||ads.example^$ BADFILTER'), []);
+  assert.deepEqual(BraveRules.parseRules('||ads.example^$image,third-party'), ['||ads.example^$image,third-party']);
+});

@@ -1,4 +1,5 @@
 import { AdguardApi, MESSAGE_HANDLER_NAME } from '@adguard/api-mv3';
+import { RuleParser } from '@adguard/agtree-runtime';
 import { localScriptRules as localScriptRulesJs } from '../.build/filters/local_script_rules.js';
 import '../lib/settings.js';
 import '../lib/privacy-settings.js';
@@ -308,14 +309,20 @@ async function setCurrentSiteProtection(protectedState, explicitHostname) {
 }
 
 async function handleAssistantRule(rule) {
-  if (typeof rule !== 'string' || !rule.trim()) {
+  if (typeof rule !== 'string' || !rule.trim() || /[\r\n]/.test(rule)) {
     return;
   }
 
   try {
+    const nextRule = rule.trim();
+    const parsed = RuleParser.parse(nextRule);
+    if (parsed.exception || !['NetworkRule', 'ElementHidingRule'].includes(parsed.type)
+      || parsed.modifiers?.children.some((modifier) => modifier.name.value !== 'domain')) {
+      console.warn('[No Cookies & Ads] Assistant returned a non-blocking rule');
+      return;
+    }
     const stored = await chrome.storage.local.get('settings');
     const settings = ProtectionSettings.sanitizeSettings(stored.settings);
-    const nextRule = rule.trim();
     if (settings.adguard.rules.includes(nextRule)) {
       return;
     }

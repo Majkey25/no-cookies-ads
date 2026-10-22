@@ -162,4 +162,34 @@ test('packaged extension hides cookie layers without breaking page controls', { 
       await page.close();
     }
   });
+
+  await t.test('Assistant messages cannot persist exception rules or disable existing blocks', async () => {
+    const page = await openFixture('toyotires.eu', '<div id="assistant-target">Hide this element</div>', false);
+    try {
+      const initial = await popup.evaluate(() => chrome.runtime.sendMessage({ type: 'GET_ADGUARD_STATE' }));
+      const sendRule = ruleText => popup.evaluate(async ({ ruleText, url }) => {
+        const [tab] = await chrome.tabs.query({ url });
+        const [result] = await chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          func: ruleText => chrome.runtime.sendMessage({
+            handlerName: 'tsWebExtension', type: 'assistantCreateRule', payload: { ruleText }
+          }),
+          args: [ruleText]
+        });
+        return result.result;
+      }, { ruleText, url: page.url() });
+      for (const rule of ['@@*', '@@*$domain=example.org', '||ads.example^$ badfilter', 'example.org##.banner\n@@*']) {
+        assert.equal(await sendRule(rule), true);
+        const result = await popup.evaluate(() => chrome.runtime.sendMessage({ type: 'GET_ADGUARD_STATE' }));
+        assert.deepEqual(result.settings.adguard.rules, initial.settings.adguard.rules, rule);
+      }
+      const rule = 'toyotires.eu###assistant-target';
+      assert.equal(await sendRule(rule), true);
+      await popup.waitForFunction(rule => document.querySelector('#userRulesEditor').value.includes(rule), rule);
+      await page.reload();
+      await page.locator('#assistant-target').waitFor({ state: 'hidden' });
+    } finally {
+      await page.close();
+    }
+  });
 });
