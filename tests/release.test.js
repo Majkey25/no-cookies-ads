@@ -6,6 +6,24 @@ const path = require('node:path');
 
 const root = path.resolve(__dirname, '..');
 
+test('release build has no write token and publication runs no project tooling', async () => {
+  const { load } = await import('js-yaml-modern');
+  const workflow = load(await fs.readFile(path.join(root, '.github/workflows/release.yml'), 'utf8'));
+  assert.deepEqual(workflow.permissions, { contents: 'read' });
+  assert.equal(workflow.jobs.build.permissions, undefined);
+  assert.equal(workflow.jobs.release.needs, 'build');
+  assert.deepEqual(workflow.jobs.release.permissions, { contents: 'write' });
+  for (const job of Object.values(workflow.jobs)) {
+    for (const step of job.steps.filter(step => step.uses)) {
+      assert.match(step.uses, /@[a-f0-9]{40}$/);
+      if (step.uses.startsWith('actions/checkout@')) assert.equal(step.with['persist-credentials'], false);
+    }
+  }
+  assert.doesNotMatch(workflow.jobs.release.steps.map(step => step.run || '').join('\n'), /npm|npx|node|playwright/);
+  assert.equal(workflow.jobs.build.steps.find(step => step.uses?.startsWith('actions/upload-artifact@')).with.name,
+    workflow.jobs.release.steps.find(step => step.uses?.startsWith('actions/download-artifact@')).with.name);
+});
+
 test('release publication preserves existing assets and propagates failures', async (t) => {
   const { load } = await import('js-yaml-modern');
   const workflow = load(await fs.readFile(path.join(root, '.github/workflows/release.yml'), 'utf8'));
