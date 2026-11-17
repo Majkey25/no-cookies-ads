@@ -83,3 +83,43 @@ ${scripts}`);
     await fs.rm(directory, { recursive: true, force: true });
   }
 });
+
+test('release archive excludes browser metadata and preserves packaged resources', async () => {
+  const temporary = path.join(root, '.reference/tmp');
+  await fs.mkdir(temporary, { recursive: true });
+  const directory = await fs.mkdtemp(path.join(temporary, 'package-'));
+  const files = {
+    'manifest.json': JSON.stringify({ version: '1.0.0' }),
+    'background.js': 'background fixture',
+    'adguard-content.js': 'content fixture',
+    'adguard-assistant.js': 'assistant fixture',
+    'filters/catalog.json': '{}',
+    '.packaged-resource': 'hidden resource',
+    'filters/_metadata/keep.txt': 'nested resource'
+  };
+  try {
+    const script = path.join(directory, 'scripts/package.mjs');
+    await fs.mkdir(path.dirname(script), { recursive: true });
+    await fs.copyFile(path.join(root, 'scripts/package.mjs'), script);
+    for (const [file, contents] of [
+      ...Object.entries(files),
+      ['_metadata/generated_indexed_rulesets/_ruleset1', 'browser cache']
+    ]) {
+      const destination = path.join(directory, 'dist/extension', file);
+      await fs.mkdir(path.dirname(destination), { recursive: true });
+      await fs.writeFile(destination, contents);
+    }
+    const result = spawnSync(process.execPath, [script], { cwd: directory, encoding: 'utf8' });
+    assert.ifError(result.error);
+    assert.equal(result.status, 0, result.stderr);
+    const unzip = process.platform === 'win32'
+      ? path.resolve(execFileSync('git', ['--exec-path'], { encoding: 'utf8' }).trim(), '../../..', 'usr/bin/unzip.exe')
+      : 'unzip';
+    const entries = execFileSync(unzip, ['-Z1', path.join(directory, 'dist/release/no-cookies-ads.zip')], { encoding: 'utf8' })
+      .split(/\r?\n/).filter(entry => entry && !entry.endsWith('/'));
+    assert.deepEqual(entries.sort(), Object.keys(files).sort());
+  } finally {
+    assert.equal(path.dirname(directory), temporary);
+    await fs.rm(directory, { recursive: true, force: true });
+  }
+});
